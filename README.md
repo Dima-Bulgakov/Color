@@ -13,9 +13,9 @@ iOS app for mix colors and save them
 
 ## Screenshots
 <p float="left">
-  <!--
-  <img src="https://github.com/Dima-Bulgakov/News/blob/secondBranch/1.png?raw=true" width="310" />
   
+  <img src="https://github.com/Dima-Bulgakov/Color/blob/branch-1/screenshot.png?raw=true" width="310" />
+  <!--
   <img src="https://github.com/Dima-Bulgakov/News/blob/secondBranch/2.gif?raw=true" width="250" /> 
 </p>
 -->
