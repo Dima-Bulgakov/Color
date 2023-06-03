@@ -60,7 +60,7 @@ final class ColorChoiceView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         addViews()
-        mainConfig()
+        configureStyle()
         setupConstraints()
     }
     
@@ -69,7 +69,7 @@ final class ColorChoiceView: UIView {
     }
     
     // MARK: - Methods
-    private func mainConfig() {
+    private func configureStyle() {
         backgroundColor = .white
         layer.cornerRadius = 20
         layer.shadowColor = UIColor.black.cgColor

@@ -20,7 +20,7 @@ class MainController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setFirstColors()
-        mainConfig()
+        configureStyle()
         setupConstraints()
         colorListView.tableView.delegate = self
         colorListView.tableView.dataSource = self
@@ -41,7 +41,7 @@ class MainController: UIViewController {
     }
 
     // MARK: - Methods
-    private func mainConfig() {
+    private func configureStyle() {
         let backgroundImageView = UIImageView(image: Helper.Image.backgroundImage)
         backgroundImageView.frame = view.bounds
         backgroundImageView.contentMode = .scaleAspectFill
@@ -89,12 +89,11 @@ class MainController: UIViewController {
         colorModel.setGreen(green: colorChoiceView.greenSlider.value)
         colorModel.setBlue(blue: colorChoiceView.blueSlider.value)
         
-        guard let hex = hexFromColor(colorModel.getColor()) else { return }
+        guard let hex = colorToHex(colorModel.getColor()) else { return }
         saveData(data: hex)
         colorListView.tableView.reloadData()
     }
     
-    // CoreData
     func saveData(data: String) {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.persistentContainer.viewContext
@@ -104,10 +103,10 @@ class MainController: UIViewController {
             return
 
         }
-
+        
         let dataObject = ColorEntity(entity: entity, insertInto: context)
         dataObject.color = data
-
+        
         do {
             try context.save()
             cellData.append(dataObject)
@@ -115,55 +114,15 @@ class MainController: UIViewController {
             print(error.localizedDescription)
         }
     }
-    
-    // Hex to UIColor
-    func colorFromHex(_ hex: String) -> UIColor? {
-        var hexString = hex.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).uppercased()
-
-        if hexString.hasPrefix("#") {
-            hexString.remove(at: hexString.startIndex)
-        }
-
-        if hexString.count != 6 {
-            return nil
-        }
-
-        var rgbValue: UInt64 = 0
-        Scanner(string: hexString).scanHexInt64(&rgbValue)
-
-        let red = CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0
-        let green = CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0
-        let blue = CGFloat(rgbValue & 0x0000FF) / 255.0
-
-        return UIColor(red: red, green: green, blue: blue, alpha: 1.0)
-    }
-    
-    func hexFromColor(_ color: UIColor) -> String? {
-        guard let components = color.cgColor.components, components.count >= 3 else {
-            return nil
-        }
-        
-        let red = components[0]
-        let green = components[1]
-        let blue = components[2]
-        
-        let hexString = String(
-            format: "#%02lX%02lX%02lX",
-            lroundf(Float(red * 255)),
-            lroundf(Float(green * 255)),
-            lroundf(Float(blue * 255))
-        )
-        return hexString
-    }
 }
 
-// MARK: - Extensions
+// MARK: - Extension Delegate and DataSource
 extension MainController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         let data = cellData[indexPath.row]
-        let hexToColor = colorFromHex(data.color ?? "")
+        let hexToColor = hexToUIColor(data.color ?? "")
         cell.backgroundColor = hexToColor
         return cell
     }
@@ -175,6 +134,7 @@ extension MainController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             
+            // Delete data
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
             let context = appDelegate.persistentContainer.viewContext
             
@@ -198,13 +158,16 @@ extension MainController: UITableViewDelegate, UITableViewDataSource {
         tableView.deselectRow(at: indexPath, animated: false)
         let selectedColor = cellData[indexPath.row]
         let color = selectedColor.color ?? ""
-        let hexToColor = colorFromHex(color)
+        let hexToColor = hexToUIColor(color)
         let vc = ColorController()
         vc.view.backgroundColor = hexToColor
         navigationController?.pushViewController(vc, animated: true)
     }
+    
+    
 }
 
+// MARK: - Extension Constraints
 extension MainController {
     func setupConstraints() {
         NSLayoutConstraint.activate([

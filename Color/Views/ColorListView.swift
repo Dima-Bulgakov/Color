@@ -20,7 +20,7 @@ class ColorListView: UIView {
     // MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
-        mainConfig()
+        configureStyle()
         setupConstraints()
     }
     
@@ -29,14 +29,13 @@ class ColorListView: UIView {
     }
     
     // MARK: - Methods
-    func mainConfig() {
+    private func configureStyle() {
         backgroundColor = .white
         layer.cornerRadius = 20
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowOpacity = 0.5
         layer.shadowOffset = CGSize(width: 10, height: 10)
         layer.shadowRadius = 20
-        
         addSubview(tableView)
     }
 }
