@@ -8,7 +8,7 @@
 import UIKit
 import CoreData
 
-class MainController: UIViewController {
+final class MainController: UIViewController {
 
     // MARK: - Properties
     let colorChoiceView = ColorChoiceView()
@@ -28,6 +28,7 @@ class MainController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        // Load data
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.persistentContainer.viewContext
         
@@ -54,7 +55,6 @@ class MainController: UIViewController {
         colorChoiceView.redSlider.addTarget(self, action: #selector(redSliderChange), for: .valueChanged)
         colorChoiceView.greenSlider.addTarget(self, action: #selector(greenSliderChange), for: .valueChanged)
         colorChoiceView.blueSlider.addTarget(self, action: #selector(blueSliderChange), for: .valueChanged)
-        
         colorChoiceView.addColorButton.addTarget(self, action: #selector(addColorButtonAction), for: .touchUpInside)
     }
     
@@ -65,7 +65,6 @@ class MainController: UIViewController {
         colorChoiceView.resultColorView.backgroundColor = colorModel.getColor()
     }
 
-    
     @objc func redSliderChange() {
         colorModel.setRed(red: colorChoiceView.redSlider.value)
         colorChoiceView.numRedLabel.text = String(format: "%.0f", colorChoiceView.redSlider.value)
@@ -89,6 +88,7 @@ class MainController: UIViewController {
         colorModel.setGreen(green: colorChoiceView.greenSlider.value)
         colorModel.setBlue(blue: colorChoiceView.blueSlider.value)
         
+        // Save color
         guard let hex = colorToHex(colorModel.getColor()) else { return }
         saveData(data: hex)
         colorListView.tableView.reloadData()
@@ -101,7 +101,6 @@ class MainController: UIViewController {
         guard let entity = NSEntityDescription.entity(forEntityName: "ColorEntity", in: context) else {
             print("Failed to create entity description")
             return
-
         }
         
         let dataObject = ColorEntity(entity: entity, insertInto: context)
@@ -120,7 +119,7 @@ class MainController: UIViewController {
 extension MainController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: Helper.Text.cellIdentifier, for: indexPath)
         let data = cellData[indexPath.row]
         let hexToColor = hexToUIColor(data.color ?? "")
         cell.backgroundColor = hexToColor
@@ -129,6 +128,16 @@ extension MainController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return cellData.count
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
+        let selectedColor = cellData[indexPath.row]
+        let color = selectedColor.color ?? ""
+        let hexToColor = hexToUIColor(color)
+        let vc = ColorController()
+        vc.view.backgroundColor = hexToColor
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -153,33 +162,22 @@ extension MainController: UITableViewDelegate, UITableViewDataSource {
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: false)
-        let selectedColor = cellData[indexPath.row]
-        let color = selectedColor.color ?? ""
-        let hexToColor = hexToUIColor(color)
-        let vc = ColorController()
-        vc.view.backgroundColor = hexToColor
-        navigationController?.pushViewController(vc, animated: true)
-    }
-    
-    
 }
 
 // MARK: - Extension Constraints
 extension MainController {
     func setupConstraints() {
+        let constant: CGFloat = 30
         NSLayoutConstraint.activate([
-            colorChoiceView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -40),
-            colorChoiceView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
-            colorChoiceView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
+            colorChoiceView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -constant),
+            colorChoiceView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: constant),
+            colorChoiceView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -constant),
             colorChoiceView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.45),
             
-            colorListView.topAnchor.constraint(equalTo: view.topAnchor, constant: 80),
-            colorListView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
-            colorListView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
-            colorListView.bottomAnchor.constraint(equalTo: colorChoiceView.topAnchor, constant: -30)
+            colorListView.topAnchor.constraint(equalTo: view.topAnchor, constant: 70),
+            colorListView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: constant),
+            colorListView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -constant),
+            colorListView.bottomAnchor.constraint(equalTo: colorChoiceView.topAnchor, constant: -constant)
         ])
     }
 }

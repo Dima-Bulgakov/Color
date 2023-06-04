@@ -7,10 +7,4 @@
 
 import UIKit
 
-class ColorController: UIViewController {
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-    }
-}
+final class ColorController: UIViewController {}

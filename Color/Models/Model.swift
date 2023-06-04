@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ColorModel {
+final class ColorModel {
     private var red: CGFloat
     private var green: CGFloat
     private var blue: CGFloat

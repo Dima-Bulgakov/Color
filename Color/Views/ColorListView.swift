@@ -7,12 +7,12 @@
 
 import UIKit
 
-class ColorListView: UIView {
+final class ColorListView: UIView {
 
     // MARK: - Properties
     lazy var tableView: UITableView = {
         let tableView = UITableView()
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: Helper.Text.cellIdentifier)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -30,7 +30,7 @@ class ColorListView: UIView {
     
     // MARK: - Methods
     private func configureStyle() {
-        backgroundColor = .white
+        backgroundColor = Helper.Color.mainWhite
         layer.cornerRadius = 20
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowOpacity = 0.5
@@ -43,11 +43,13 @@ class ColorListView: UIView {
 // MARK: - Extension
 extension ColorListView {
     func setupConstraints() {
+        let constant: CGFloat = 20
+        
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-            tableView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),
-            tableView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            tableView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20)
+            tableView.topAnchor.constraint(equalTo: topAnchor, constant: constant),
+            tableView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -constant),
+            tableView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: constant),
+            tableView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -constant)
         ])
     }
 }

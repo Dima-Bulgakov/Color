@@ -7,6 +7,7 @@
 
 import UIKit
 
+// Custom addSubview with translatesAutoresizingMaskIntoConstraints
 extension UIView {
     func addMySubview(_ view: UIView) {
         addSubview(view)

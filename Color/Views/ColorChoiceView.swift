@@ -26,7 +26,7 @@ final class ColorChoiceView: UIView {
     
     let resultColorView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = Helper.Color.mainWhite
         view.layer.cornerRadius = 10
         view.clipsToBounds = true
         return view
@@ -34,9 +34,9 @@ final class ColorChoiceView: UIView {
     
     let addColorButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor =  #colorLiteral(red: 0.192312386, green: 0.1262226701, blue: 0.1454250515, alpha: 1)
-        button.setTitle("Add Color", for: .normal)
-        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor =  Helper.Color.addButton
+        button.setTitle(Helper.Text.addButtonTitle, for: .normal)
+        button.setTitleColor(Helper.Color.mainWhite, for: .normal)
         button.layer.cornerRadius = 10
         return button
     }()
@@ -70,7 +70,7 @@ final class ColorChoiceView: UIView {
     
     // MARK: - Methods
     private func configureStyle() {
-        backgroundColor = .white
+        backgroundColor = Helper.Color.mainWhite
         layer.cornerRadius = 20
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowOpacity = 0.5
@@ -92,7 +92,7 @@ final class ColorChoiceView: UIView {
         slider.minimumTrackTintColor = trackColor
         slider.maximumTrackTintColor = UIColor.systemGray5
         slider.thumbTintColor = thumbColor
-        slider.value = 100
+        slider.value = 128
         return slider
     }
     
@@ -106,13 +106,14 @@ final class ColorChoiceView: UIView {
     }
     
     private func addViews() {
-        redSlider = createSlider(maxValue: 255, trackColor: .systemRed, thumbColor: .systemRed)
-        greenSlider = createSlider(maxValue: 255, trackColor: .systemGreen, thumbColor: .systemGreen)
-        blueSlider = createSlider(maxValue: 255, trackColor: .systemBlue, thumbColor: .systemBlue)
+        let maxValue: Float = 255
+        redSlider = createSlider(maxValue: maxValue, trackColor: .systemRed, thumbColor: .systemRed)
+        greenSlider = createSlider(maxValue: maxValue, trackColor: .systemGreen, thumbColor: .systemGreen)
+        blueSlider = createSlider(maxValue: maxValue, trackColor: .systemBlue, thumbColor: .systemBlue)
         
-        redLabel = createLabel(text: "Red", position: .left)
-        greenLabel = createLabel(text: "Green", position: .left)
-        blueLabel = createLabel(text: "Blue", position: .left)
+        redLabel = createLabel(text: Helper.Text.redLabel, position: .left)
+        greenLabel = createLabel(text: Helper.Text.greenLabel, position: .left)
+        blueLabel = createLabel(text: Helper.Text.blueLabel, position: .left)
         
         numRedLabel = createLabel(text: String(format: "%.0f", redSlider.value), position: .right)
         numGreenLabel = createLabel(text: String(format: "%.0f", greenSlider.value), position: .right)
@@ -143,11 +144,13 @@ final class ColorChoiceView: UIView {
 // MARK: - Extension
 private extension ColorChoiceView {
     func setupConstraints() {
+        let constant: CGFloat = 20
+        
         NSLayoutConstraint.activate([
-            verticalStack.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-            verticalStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),
-            verticalStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
-            verticalStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            verticalStack.topAnchor.constraint(equalTo: topAnchor, constant: constant),
+            verticalStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -constant),
+            verticalStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: constant),
+            verticalStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -constant),
         ])
     }
 }
