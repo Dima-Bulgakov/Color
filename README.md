@@ -1,5 +1,5 @@
 # Color
-The simple iOS app for mixing colors and saving them to Core Data
+The simple iOS app for mixing colors and saving them to Core Data.
 
 ## Major Functionality
 
